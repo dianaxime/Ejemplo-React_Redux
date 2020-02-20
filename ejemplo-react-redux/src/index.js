@@ -26,7 +26,7 @@ payload es una convencion para definir que esta funcion necesita un indice(param
 
 
 
-import {createStore} from 'redux';
+import {createStore, combineReducers} from 'redux';
 
 const trafficLights = (state = [], action) => {
 	switch(action.type) {
@@ -40,6 +40,9 @@ const trafficLights = (state = [], action) => {
 		}
 		case 'ALL_TRAFFIC_LIGHTS_CHANGED':{
 			return state.map(i => (i + 1) % 3);
+		}
+		case 'REVERSED':{
+			return state.slice().reverse();
 		}
 		//TOTALMENTE NECESARIO AGREGAR EL DEFAULT
 		default:{
@@ -66,6 +69,9 @@ const pmt = (state = [], action) => {
 					return pmtAgent;
 				}
 			);
+		}
+		case 'REVERSED':{
+			return state.slice().reverse();
 		}
 		default: {
 			return state;
@@ -141,13 +147,14 @@ store.dispatch({
 });
 
 store.dispatch({
-	type: 'PMT_AGENT_ADDED',
+	type: 'PMT_AGENT_CHANGED',
 	payload: {
-		id: 3,
-		name: 'Juanito Bazuca',
-		age: 40,
+		id: 2,
+		name: 'Difunto Pepe Trueno',
 	}
 });
+
+store.dispatch({type: 'REVERSED'});
 
 
 /*import React from 'react';
