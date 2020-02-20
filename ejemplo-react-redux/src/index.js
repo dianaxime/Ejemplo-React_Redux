@@ -1,14 +1,30 @@
 /*
 
-state = [0,0,0];
+state = {
+	trafficLights: [0,0,0]
+	pmt: [
+	{
+	id: 1,
+	name: 'Sammuel',
+	age: 30,
+	},
+	]
+};
 'TRAFFIC_LIGHT_ADDED'
 'TRAFFIC_LIGHT_CHANGED', index
 'ALL_TRAFFIC_LIGHTS_CHANGED'
+
+'PMT_AGENT_ADDED'
+'PMT_AGENT_CHANGED'
+
+
 Acciones en mayusculas y pasado perfecto
 
 payload es una convencion para definir que esta funcion necesita un indice(parametro) para una accion
 
 */
+
+
 
 import {createStore} from 'redux';
 
@@ -32,7 +48,38 @@ const trafficLights = (state = [], action) => {
 	}
 };
 
-const store = createStore(trafficLights);
+
+const pmt = (state = [], action) => {
+	switch(action.type) {
+		case 'PMT_AGENT_ADDED':{
+			return [...state, action.payload];
+		}
+		case 'PMT_AGENT_CHANGED' : {
+			return state.map(
+				pmtAgent => {
+					if (pmtAgent.id === action.payload.id){
+						return{
+							...pmtAgent,
+							...action.payload,
+						};
+					}
+					return pmtAgent;
+				}
+			);
+		}
+		default: {
+			return state;
+		}
+	}
+}
+
+const reducer = combineReducers({
+	trafficLights,
+	pmt, 
+});
+
+
+const store = createStore(reducer);
 
 store.subscribe(() => console.log(store.getState()));
 
@@ -59,6 +106,49 @@ store.dispatch({ type: 'ALL_TRAFFIC_LIGHTS_CHANGED'});
 store.dispatch({ type: 'ALL_TRAFFIC_LIGHTS_CHANGED'});
 store.dispatch({ type: 'ALL_TRAFFIC_LIGHTS_CHANGED'});
 store.dispatch({ type: 'ALL_TRAFFIC_LIGHTS_CHANGED'});
+
+
+
+/*const store = createStore(pmt);
+
+store.subscribe(() => console.log(store.getState()));*/
+
+store.dispatch({
+	type: 'PMT_AGENT_ADDED',
+	payload: {
+		id: 1,
+		name: 'Samuel',
+		age: 30,
+	}
+});
+
+store.dispatch({
+	type: 'PMT_AGENT_ADDED',
+	payload: {
+		id: 2,
+		name: 'Pepe Trueno',
+		age: 3,
+	}
+});
+
+store.dispatch({
+	type: 'PMT_AGENT_ADDED',
+	payload: {
+		id: 3,
+		name: 'Juanito Bazuca',
+		age: 40,
+	}
+});
+
+store.dispatch({
+	type: 'PMT_AGENT_ADDED',
+	payload: {
+		id: 3,
+		name: 'Juanito Bazuca',
+		age: 40,
+	}
+});
+
 
 /*import React from 'react';
 import ReactDOM from 'react-dom';
