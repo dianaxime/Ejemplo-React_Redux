@@ -1,3 +1,5 @@
+
+import omit from 'lodash/omit';
 /*
 
 state = {
@@ -9,6 +11,10 @@ state = {
 	age: 30,
 	},
 	]
+	pmtToTrafficLights: [{
+	5: 2,
+	3: 4,
+	}]
 };
 'TRAFFIC_LIGHT_ADDED'
 'TRAFFIC_LIGHT_CHANGED', index
@@ -17,10 +23,32 @@ state = {
 'PMT_AGENT_ADDED'
 'PMT_AGENT_CHANGED'
 
+'TRAFFIC_lIGHT_PMT_AGENT_ASSIGNED',
+payload: {
+	pmt:5
+	trafficLight: 2
+}
+
+
+'TRAFFIC_lIGHT_PMT_AGENT_UNASSIGNED'
 
 Acciones en mayusculas y pasado perfecto
 
 payload es una convencion para definir que esta funcion necesita un indice(parametro) para una accion
+
+pmt:{
+	byId:{
+	1: {
+	{
+	id: 1,
+	name: 'Sammuel',
+	age: 30,
+	}
+	}
+	en que orden vino del servidor
+	order: [1]
+	}
+}
 
 */
 
@@ -52,7 +80,7 @@ const trafficLights = (state = [], action) => {
 };
 
 
-const pmt = (state = [], action) => {
+/*const pmt = (state = [], action) => {
 	switch(action.type) {
 		case 'PMT_AGENT_ADDED':{
 			return [...state, action.payload];
@@ -77,11 +105,75 @@ const pmt = (state = [], action) => {
 			return state;
 		}
 	}
+}*/
+
+
+//Instalar moment JS
+
+
+const order = (state = [], action) =>{
+	switch(action.type){
+		case 'PMT_AGENT_ADDED':{
+			return [...state, action.payload.id]
+		}
+		case 'REVERSED':{
+			return state.slice().reverse();
+		}
+		default:{
+			return state
+		}
+	}
 }
 
+const byId = (state = {}, action) => {
+	switch (action.type) {
+		case 'PMT_AGENT_ADDED': {
+			return{
+				...state,
+				[action.payload.id] : action.payload,
+			};
+		}
+		case 'PMT_AGENT_CHANGED':{
+			return {
+				...state,
+				[action.payload.id]:{
+					...state[action.payload.id],
+					...action.payload,
+				},
+			};
+		}
+		default: {
+			return state;
+		}
+	}
+}
+
+const pmtToTrafficLights = (state = {}, action) =>{
+	switch(action.type){
+		case 'TRAFFIC_lIGHT_PMT_AGENT_ASSIGNED':{
+			return {
+				...state, 
+				[action.payload.pmt]: action.payload.trafficLight
+			}
+		}
+		case 'TRAFFIC_lIGHT_PMT_AGENT_UNASSIGNED':{
+			return omit(state, action.payload.pmt)
+		}
+		default: {
+			return state;
+		}
+	}
+}
+const pmt = combineReducers({
+	byId,
+	order
+});
+
+//yarn add lodash
 const reducer = combineReducers({
 	trafficLights,
 	pmt, 
+	pmtToTrafficLights
 });
 
 
@@ -155,6 +247,37 @@ store.dispatch({
 });
 
 store.dispatch({type: 'REVERSED'});
+
+store.dispatch({
+	type: 'TRAFFIC_lIGHT_PMT_AGENT_ASSIGNED',
+	payload: {
+		pmt: 5,
+		trafficLight: 2
+	}
+})
+
+store.dispatch({
+	type: 'TRAFFIC_lIGHT_PMT_AGENT_ASSIGNED',
+	payload: {
+		pmt: 6,
+		trafficLight: 1
+	}
+})
+
+store.dispatch({
+	type: 'TRAFFIC_lIGHT_PMT_AGENT_ASSIGNED',
+	payload: {
+		pmt: 5,
+		trafficLight: 3
+	}
+})
+
+store.dispatch({
+	type: 'TRAFFIC_lIGHT_PMT_AGENT_UNASSIGNED',
+	payload: {
+		pmt: 5
+	}
+})
 
 
 /*import React from 'react';
