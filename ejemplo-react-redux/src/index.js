@@ -1,5 +1,7 @@
 
 import omit from 'lodash/omit';
+
+//yarn add react-redux
 /*
 
 state = {
@@ -176,7 +178,10 @@ const reducer = combineReducers({
 	pmtToTrafficLights
 });
 
-
+/*eghead
+Ver videos
+Building React Aplications with Idiomatic Redux
+*/
 const store = createStore(reducer);
 
 store.subscribe(() => console.log(store.getState()));
